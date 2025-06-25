@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamDockSDK", "StreamDockSDK\StreamDockSDK.csproj", "{DB3BB7A5-4E95-4B62-911E-175ED91F0442}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamDockSDK.Example", "StreamDockSDK.Example\StreamDockSDK.Example.csproj", "{A91D5E77-FB56-4480-ABCF-DF6BF30D223B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamDockSDK.ManifestBuilder", "StreamDockSDK.ManifestBuilder\StreamDockSDK.ManifestBuilder.csproj", "{006ABAC3-509B-42D8-825A-0E69A18D8817}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamDockSDK.Example.Bundler", "StreamDockSDK.Example.Bundler\StreamDockSDK.Example.Bundler.csproj", "{852E7568-3448-4EE2-8F64-61AED5BDA9BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB3BB7A5-4E95-4B62-911E-175ED91F0442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB3BB7A5-4E95-4B62-911E-175ED91F0442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB3BB7A5-4E95-4B62-911E-175ED91F0442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB3BB7A5-4E95-4B62-911E-175ED91F0442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A91D5E77-FB56-4480-ABCF-DF6BF30D223B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A91D5E77-FB56-4480-ABCF-DF6BF30D223B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A91D5E77-FB56-4480-ABCF-DF6BF30D223B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A91D5E77-FB56-4480-ABCF-DF6BF30D223B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{006ABAC3-509B-42D8-825A-0E69A18D8817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{006ABAC3-509B-42D8-825A-0E69A18D8817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{006ABAC3-509B-42D8-825A-0E69A18D8817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{006ABAC3-509B-42D8-825A-0E69A18D8817}.Release|Any CPU.Build.0 = Release|Any CPU
+		{852E7568-3448-4EE2-8F64-61AED5BDA9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{852E7568-3448-4EE2-8F64-61AED5BDA9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{852E7568-3448-4EE2-8F64-61AED5BDA9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{852E7568-3448-4EE2-8F64-61AED5BDA9BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
