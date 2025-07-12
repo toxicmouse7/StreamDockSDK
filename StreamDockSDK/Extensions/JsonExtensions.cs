@@ -21,4 +21,9 @@ public static class JsonExtensions
     {
         return JsonSerializer.Deserialize<TType>(obj, Options)!;
     }
+
+    public static object FromStreamDockJson(this string obj, Type type)
+    {
+        return JsonSerializer.Deserialize(obj, type, Options)!;
+    }
 }

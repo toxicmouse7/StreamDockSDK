@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StreamDockSDK.Extensions;
 
 namespace StreamDockSDK;
 
@@ -15,13 +16,13 @@ internal class ActionFactory
         _serviceProvider = serviceProvider;
         _availableActions = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(a => a.ExportedTypes)
-            .Where(t => t.IsAssignableTo(typeof(AbstractAction)) && !t.IsAbstract)
+            .Where(t => t.IsAssignableTo(typeof(IAction)) && !t.IsAbstract)
             .ToList();
         
         logger.LogInformation("Available actions: {@actions}", _availableActions.Select(a => a.FullName));
     }
     
-    public AbstractAction? CreateAction(
+    public IAction? CreateAction(
         string actionName,
         string context,
         Dictionary<string, object> settings,
@@ -30,16 +31,18 @@ internal class ActionFactory
         var action = _availableActions.FirstOrDefault(a => a.FullName == actionName);
         if (action is null)
         {
+            _logger.LogError("Action {actionName} not found", actionName);
             return null;
         }
         
-        _logger.LogInformation("Creating action {actionName}", actionName);
+        var settingsType = action.BaseType!.GenericTypeArguments[0];
+        
+        _logger.LogInformation("Creating action {actionName}<{actionSettings}>", actionName, settingsType.Name);
 
-        return ActivatorUtilities.CreateInstance(
+        return (IAction)ActivatorUtilities.CreateInstance(
             _serviceProvider,
             action,
             context,
-            settings,
-            (Action<object>)plugin.Send) as AbstractAction;
+            settings.ToStreamDockJson().FromStreamDockJson(settingsType));
     }
 }

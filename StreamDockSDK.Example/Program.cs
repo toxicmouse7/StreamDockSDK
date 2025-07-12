@@ -11,6 +11,7 @@ var logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File(
         Path.Join(pluginPath, "logs/plugin.log"),
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}]",
         rollingInterval: RollingInterval.Day,
         retainedFileCountLimit: 1)
     .CreateLogger();

@@ -1,19 +1,22 @@
-﻿namespace StreamDockSDK;
+﻿using StreamDockSDK.Bus;
+using StreamDockSDK.BusEvents;
 
-public abstract class AbstractAction
+namespace StreamDockSDK;
+
+public abstract class AbstractAction<TActionSettings> : IAction
 {
     private readonly string _context;
-    private readonly Action<object> _sender;
+    private readonly IBus _bus;
 
-    public AbstractAction(string context, Dictionary<string, object> settings, Action<object> sender)
+    public AbstractAction(string context, TActionSettings settings, IBus bus)
     {
         _context = context;
-        _sender = sender;
+        _bus = bus;
     }
 
-    public void SetTitle(string title)
+    protected void SetTitle(string title)
     {
-        _sender(new
+        _bus.Publish(new SendToServer(new
         {
             Event = "setTitle",
             Context = _context,
@@ -22,12 +25,12 @@ public abstract class AbstractAction
                 Title = title,
                 Target = 0
             }
-        });
+        }));
     }
 
-    public void SetState(int stateNumber)
+    protected void SetState(int stateNumber)
     {
-        _sender(new
+        _bus.Publish(new SendToServer(new
         {
             Event = "setState",
             Context = _context,
@@ -35,17 +38,17 @@ public abstract class AbstractAction
             {
                 State = stateNumber
             }
-        });
+        }));
     }
 
-    public void SetSettings(Dictionary<string, object> settings)
+    protected void SetSettings(TActionSettings settings)
     {
-        _sender(new
+        _bus.Publish(new SendToServer(new
         {
             Event = "setSettings",
             Context = _context,
             Payload = settings
-        });
+        }));
     }
 
     public virtual void OnDidReceiveGlobalSettings(Dictionary<string, object> settings)

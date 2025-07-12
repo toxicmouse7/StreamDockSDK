@@ -34,8 +34,11 @@ public class ManifestBuilder<TAssembly>
 
     private static List<Action> GetActionsManifest()
     {
-        var actions = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
-            .Where(t => typeof(AbstractAction).IsAssignableFrom(t) && !t.IsAbstract);
+        var actions = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => t.BaseType is { IsGenericType: true } baseType
+                        && baseType.GetGenericTypeDefinition() == typeof(AbstractAction<>));
 
         var manifestActions = actions.Select(a =>
         {

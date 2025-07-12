@@ -1,21 +1,22 @@
-﻿using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using StreamDockSDK.Extensions;
-using WebSocketSharp;
+using StreamDockSDK.Bus;
+using StreamDockSDK.BusEvents;
 
 namespace StreamDockSDK;
 
 public sealed class Plugin : IHostedService
 {
-    private readonly ILogger<Plugin> _logger;
-    private readonly ActionFactory _actionFactory;
+    private readonly int _port;
     private readonly string _uuid;
     private readonly string _registerEvent;
-    private readonly WebSocket _client;
+    
+    private readonly ILogger<Plugin> _logger;
+    private readonly ActionFactory _actionFactory;
+    private readonly IBus _bus;
 
-    private readonly Dictionary<string, AbstractAction> _actions = [];
+    private readonly Dictionary<string, IAction> _actions = [];
 
     private Dictionary<string, object> _globalSettings = [];
 
@@ -23,44 +24,25 @@ public sealed class Plugin : IHostedService
         int port,
         string uuid,
         string registerEvent,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IBus bus)
     {
         _uuid = uuid;
         _registerEvent = registerEvent;
+        _port = port;
+        _bus = bus;
 
-        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-        _logger = loggerFactory.CreateLogger<Plugin>();
-
+        _logger = serviceProvider.GetRequiredService<ILogger<Plugin>>();
         _actionFactory = serviceProvider.GetRequiredService<ActionFactory>();
-
-        _client = new WebSocket($"ws://127.0.0.1:{port}");
+        
+        _bus.Subscribe<MessageReceived>(async @event => await OnMessageReceivedAsync(@event.Message));
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting StreamDockSDK");
-
-        _client.OnOpen += (_, _) =>
-        {
-            var message = new Message
-            {
-                Event = _registerEvent,
-                Uuid = _uuid
-            };
-
-            _client.Send(message.ToStreamDockJson());
-        };
-
-        _client.OnMessage += async (_, e) =>
-        {
-            var message = e.Data.FromStreamDockJson<Message>();
-            await OnMessageReceivedAsync(message);
-        };
-
-        _client.OnError += (_, args) => _logger.LogError(args.Exception, "WebSocket error");
+        _bus.Publish(new PluginActivated(_port, _uuid, _registerEvent));
         
-        _client.Connect();
-
         return Task.CompletedTask;
     }
 
@@ -187,11 +169,5 @@ public sealed class Plugin : IHostedService
 
             interactionHandler?.Invoke(message);
         }
-    }
-
-    public void Send(object message)
-    {
-        _client.Send(message.ToStreamDockJson());
-        _logger.LogInformation("Sent: {message}", message.ToStreamDockJson());
     }
 }
